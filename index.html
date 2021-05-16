@@ -349,7 +349,7 @@ function displayPlayer(){
 			   const urlParams = new URLSearchParams(queryString);
 
 
-			   var isWss  = location.protocol == "https"?"wss":"ws";
+			   var isWss  = location.protocol == "https:"?"wss":"ws";
 
 			   var full = isWss+'://'+location.hostname+(location.port ? ':'+location.port: '');
 			   console.log(full)
