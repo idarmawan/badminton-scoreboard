@@ -381,7 +381,7 @@ function displayPlayer(){
                   if(urlParams.has('mid')){
 					$("#control_panel").hide();
 					 ws.send(JSON.stringify({"matchId":urlParams.get('mid'),"action":"subscribe"}));
-					 $("#playerName").show();
+					 $("#playerName").hide();
 				  }
 				  
 				   if (localStorage.MatchAdminToken) {
