@@ -40,15 +40,12 @@ display: flex;
 	overflow:hidden;
 }
 
-#selectedSet,#MatchType{
+#selectedSet{
 	height:30px;
 	width:100px;
 	color:black;
 }
 
-#playerName{
-	display:none;
-}
 </style>
 </head>
 <body>
@@ -71,7 +68,7 @@ display: flex;
 		<div class="col-xs-2 two_hundred orange" id="set1team1">-</div>
 		<div class="col-xs-2 two_hundred orange" id="set2team1">-</div>
 	</div>
-	<div class="row-fluid">
+	<div class="row-fluid" id="control_panel" style="">
 	
 	<select id="selectedSet"  >
 		<option value=0 >Set 1</option>
@@ -79,24 +76,21 @@ display: flex;
 		<option  value=2 >Set 3</option>
 	 </select>
 	 
-	 <select id="MatchType"  >
-		<option value=0 >Rally Point</option>
-		<option  value=1 >Double Serve</option>
-	 </select>
+	
 	 
 	 
-	 <button type="button" class="btn green" id="tambah1">Add Point Team1</button>
-	 <button type="button"  class="btn green" id="kurang1">Remove Point Team1</button>
+	 <button type="button" class="btn btn-lg green" id="tambah1">Add Point Team1</button>
+	 <button type="button"  class="btn  btn-lg green" id="kurang1">Remove Point Team1</button>
 	 
-	 <button type="button"  class="btn btn-primary" id="pindah_serve">Change Serve</button>
+	 <button type="button"  class="btn  btn-lg  btn-primary" id="pindah_serve">Change Serve</button>
 	 
 	 
-	 <button type="button" class="btn orange" id="tambah2">Add Point Team2</button>
-	 <button type="button"  class="btn orange" id="kurang2">Remove Point Team2</button>
+	 <button type="button" class="btn btn-lg  orange" id="tambah2">Add Point Team2</button>
+	 <button type="button"  class="btn  btn-lg orange" id="kurang2">Remove Point Team2</button>
 	 
 	
-	 <button type="button"  class="btn btn-danger" id="reset">Reset Match Data</button>
-
+	 <button type="button"  class="btn  btn-lg btn-danger" id="reset">Reset Match Data</button>
+	<a href="#" id="midUrl" target="_blank">Share Match URL</a>
 	  
 	</div>
 	<div class="row-fluid" id="playerName">
@@ -106,27 +100,41 @@ display: flex;
 		  <div class="form-group">
 			<label for="inputEmail3" class="col-sm-2 control-label">Team1Player1</label>
 			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_0" placeholder="player name">
+			  <input type="text" class="form-control" id="player_0" placeholder="player name" value="Loewm">
 			</div>
 		  </div>
 		    <div class="form-group">
 			<label for="inputEmail3" class="col-sm-2 control-label">Team1Player2</label>
 			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_1" placeholder="player name">
+			  <input type="text" class="form-control" id="player_1" placeholder="player name" value="Loewm">
 			</div>
 		  </div>
 		  <div class="form-group">
 			<label for="inputEmail3" class="col-sm-2 control-label">Team2Player1</label>
 			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_2" placeholder="player name">
+			  <input type="text" class="form-control" id="player_2" placeholder="player name" value="Loewm">
 			</div>
 		  </div>
 		    <div class="form-group">
 			<label for="inputEmail3" class="col-sm-2 control-label">Team2Player2</label>
 			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_3" placeholder="player name">
+			  <input type="text" class="form-control" id="player_3" placeholder="player name" value="Loewm">
 			</div>
 		  </div>
+		    <div class="form-group">
+			<label for="inputEmail3" class="col-sm-2 control-label">Team2Player2</label>
+			<div class="col-sm-10">
+			
+			 <select id="MatchType"  class="form-control" >
+		<option value=0 >Rally Point</option>
+		<option  value=1 >Double Serve</option>
+	 </select>
+	 
+	 
+			</div>
+		  </div>
+		  
+		  
 		  
 		  
 		  <div class="form-group">
@@ -145,30 +153,26 @@ display: flex;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 <script>
 
-  
+
 var matchPoint = [[0,0],[0,0],[0,0]];
 var currentSet = 0;
 var PlayerName = [["-","-"],["-","-"]];
 var MatchType = 0;
-
+var MatchId ;
+var ws;
+var serveClass = 0;
+var MatchAdminToken = false;
 
   if (typeof(localStorage) !== "undefined") {
-    if (localStorage.PlayerName) {
-		console.log(localStorage)
-		matchPoint =  JSON.parse(localStorage.getItem("matchPoint"))
-		currentSet =  localStorage.getItem("currentSet")
-		PlayerName =  JSON.parse(localStorage.getItem("PlayerName"))
-		$("#selectedSet").val(currentSet);
-		console.log(matchPoint);
-		display()
-		displayPlayer();
-		MatchType =  JSON.parse(localStorage.getItem("MatchType"))
-		$("#MatchType").val(MatchType);
+    if (localStorage.MatchAdminToken) {
+		$("#control_panel").show();
+		$("#playerName").hide();
+		MatchId  = localStorage.MatchId
+		MatchAdminToken  = localStorage.MatchAdminToken
+		var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+"/?mid="+MatchId;
+		$("#midUrl").attr("href", full)
     }else{
-		localStorage.currentSet = currentSet
-		localStorage.PlayerName = JSON.stringify(PlayerName)
-		localStorage.matchPoint = JSON.stringify(matchPoint)
-	$("#playerName").show();
+		$("#playerName").show();
 	}
 
   } else {
@@ -222,8 +226,12 @@ display()
 
 });
 
-function display(){
-	localStorage.matchPoint = JSON.stringify(matchPoint);
+function display(noUpdate=false){
+	if(ws != undefined && noUpdate == false){
+		 ws.send(JSON.stringify({"matchId":MatchId,"matchPoint":matchPoint,"admin":MatchAdminToken,"action":"update"}));
+	}
+	
+	//localStorage.matchPoint = JSON.stringify(matchPoint);
 	for( set in matchPoint){
 		for( team in matchPoint[set]){
 			var dm= "#set"+set+"team"+team;
@@ -268,25 +276,48 @@ $( "#pindah_serve" ).on( "click", function() {
 	var dm= "#set"+currentSet+"team"+lastServer;
 	$(".two_hundred").removeClass("server0");
 	$(".two_hundred").removeClass("server1");
+	
+	if(ws != undefined){
+		 ws.send(JSON.stringify({"matchId":MatchId,"server":dm,"serveClass":serveClass,"action":"update","admin":MatchAdminToken}));
+	}
+	
+	
 	$(dm).addClass("server"+serveClass);
 });
 
 
 $( "#savePlayer" ).on( "click", function() {
+
 	PlayerName[0][0] = $("#player_0").val();
 	PlayerName[0][1] = $("#player_1").val();
 	PlayerName[1][0] = $("#player_2").val();
 	PlayerName[1][1] = $("#player_3").val();
+	
 
+	var MatchMetaData = {
+		"PlayerName":PlayerName,
+		"matchPoint":matchPoint,
+		"currentSet":currentSet,
+		"action":"register", 
+		"server":"#set"+currentSet+"team"+lastServer,
+		"serveClass":serveClass 
+	};
+	ws.send(JSON.stringify(MatchMetaData));
+	
 	displayPlayer();
 	$("#playerName").hide();
 });
 
 $( "#reset" ).on( "click", function() {
 	confirm("apakah ada yakin akan me-reset data pertandingan?");
-	localStorage.removeItem("matchPoint");
-	localStorage.removeItem("currentSet");
-	localStorage.removeItem("PlayerName");
+	
+	if(ws != undefined){
+		 ws.send(JSON.stringify({"matchId":MatchId,"admin":MatchAdminToken,"action":"delete"}));
+	}
+	
+	
+	localStorage.removeItem("MatchAdminToken");
+	localStorage.removeItem("MatchId");
 	console.log(localStorage)
 	location.reload();
 });
@@ -296,7 +327,7 @@ $( "#reset" ).on( "click", function() {
 	
 	
 function displayPlayer(){
-	localStorage.PlayerName = JSON.stringify(PlayerName);
+	//localStorage.PlayerName = JSON.stringify(PlayerName);
 	for( team in PlayerName){
 		for( player in PlayerName[team]){
 			var dm= "#team"+team+"player"+player;
@@ -305,4 +336,122 @@ function displayPlayer(){
 	}
 	
 }
+
+
+
+
+
+            if ("WebSocket" in window) {
+      
+               // Let us open a web socket
+			   
+			   const queryString = window.location.search;
+			   const urlParams = new URLSearchParams(queryString);
+
+
+			   var isWss  = location.protocol == "https"?"wss":"ws";
+
+			   var full = isWss+'://'+location.hostname+(location.port ? ':'+location.port: '');
+			   console.log(full)
+			   if(urlParams.has('mid')){
+					$("#control_panel").hide();
+					$("#playerName").hide();
+			   }
+			   
+			   
+               ws = new WebSocket(full);
+				
+               ws.onopen = function() {
+                  
+                  if(urlParams.has('mid')){
+					$("#control_panel").hide();
+					 ws.send(JSON.stringify({"matchId":urlParams.get('mid'),"action":"subscribe"}));
+					 
+				  }
+				  
+				   if (localStorage.MatchAdminToken) {
+						ws.send(JSON.stringify({"matchId":MatchId,"action":"get"}));
+		
+					}
+                 
+               };
+				
+               ws.onmessage = function (evt) { 
+                  var data = evt.data;
+				  console.log(data);  
+				   try {
+						console.log(data)
+						var matchData = JSON.parse(data)
+						if("error" in matchData){
+							alert(matchData.error);
+							return false;
+						}
+						if("matchPoint" in matchData){
+							matchPoint = matchData.matchPoint
+							display(true)
+						}
+						
+						if("PlayerName" in matchData){
+							PlayerName = matchData.PlayerName
+							displayPlayer()
+						}
+						
+						if("server" in matchData){
+							$(".two_hundred").removeClass("server0");
+							$(".two_hundred").removeClass("server1");
+							$(matchData.server).addClass("server"+matchData.serveClass);
+						}
+						
+						
+						if("mid" in matchData){
+							MatchId = matchData.mid
+							localStorage.MatchId = MatchId
+							if("admin" in matchData){
+								MatchAdminToken =  matchData.admin
+								localStorage.MatchAdminToken = MatchAdminToken;
+							}
+							console.log(MatchId)
+							var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+"/?mid="+MatchId;
+							$("#midUrl").attr("href", full)
+							$("#mid").val(matchData.mid)
+						}
+						
+					}catch (e) {
+					  console.log("entering catch block");
+					  console.log(e);
+					  console.log("leaving catch block");
+					}
+		
+               };
+				
+               ws.onclose = function() { 
+                  
+                  // websocket is closed.
+                  alert("Connection is closed, refresh your browser"); 
+				  
+               };
+            } else {
+              
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+
+ 
+ /*
+if (navigator.share) {
+
+	var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+"/?mid="+MatchId;
+			   
+	  navigator.share({
+		title: 'watch badminton match',
+		text: 'Check out web.dev.',
+		url: full,
+	  })
+		.then(() => console.log('Successful share'))
+		.catch((error) => console.log('Error sharing', error));
+}else{
+	console.log("no web share")
+}
+*/
+
 </script>
