@@ -2,6 +2,7 @@
 <head>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <style>
 body{
 	background-color:black;
@@ -69,7 +70,9 @@ display: flex;
 		<div class="col-xs-2 two_hundred orange" id="set2team1">-</div>
 	</div>
 	<div class="row-fluid" id="control_panel" style="">
-	
+	 <button type="button"  class="btn  btn-lg btn-danger" id="reset">Reset Match Data</button>
+	 
+	 
 	<select id="selectedSet"  >
 		<option value=0 >Set 1</option>
 		<option  value=1 >Set 2</option>
@@ -79,6 +82,7 @@ display: flex;
 	
 	 
 	 
+	  
 	 <button type="button" class="btn btn-lg green" id="tambah1">Add Point Team1</button>
 	 <button type="button"  class="btn  btn-lg green" id="kurang1">Remove Point Team1</button>
 	 
@@ -89,41 +93,41 @@ display: flex;
 	 <button type="button"  class="btn  btn-lg orange" id="kurang2">Remove Point Team2</button>
 	 
 	
-	 <button type="button"  class="btn  btn-lg btn-danger" id="reset">Reset Match Data</button>
-	<a href="#" id="midUrl" target="_blank">Share Match URL</a>
+	
+	<a href="#" id="midUrl" class="btn  btn-lg btn-primary" target="_blank">Share Match URL</a>
 	  
 	</div>
 	<div class="row-fluid" id="playerName">
 	<h2>Set the Player Name</h2>
-	<div class="col-md-6 ">
-				<form class="form-horizontal">
+	<div class="col-md-6">
+				<form >
 		  <div class="form-group">
-			<label for="inputEmail3" class="col-sm-2 control-label">Team1Player1</label>
-			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_0" placeholder="player name" value="Loewm">
+			<label for="inputEmail3" class="control-label">Team1Player1</label>
+			<div class="">
+			  <input type="text" class="form-control" id="player_0" placeholder="player name" value="">
 			</div>
 		  </div>
 		    <div class="form-group">
-			<label for="inputEmail3" class="col-sm-2 control-label">Team1Player2</label>
-			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_1" placeholder="player name" value="Loewm">
+			<label for="inputEmail3" class="control-label">Team1Player2</label>
+			<div class="">
+			  <input type="text" class="form-control" id="player_1" placeholder="player name" value="">
 			</div>
 		  </div>
 		  <div class="form-group">
-			<label for="inputEmail3" class="col-sm-2 control-label">Team2Player1</label>
-			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_2" placeholder="player name" value="Loewm">
+			<label for="inputEmail3" class="control-label">Team2Player1</label>
+			<div class="">
+			  <input type="text" class="form-control" id="player_2" placeholder="player name" value="">
 			</div>
 		  </div>
 		    <div class="form-group">
-			<label for="inputEmail3" class="col-sm-2 control-label">Team2Player2</label>
-			<div class="col-sm-10">
-			  <input type="text" class="form-control" id="player_3" placeholder="player name" value="Loewm">
+			<label for="inputEmail3" class="control-label">Team2Player2</label>
+			<div class="">
+			  <input type="text" class="form-control" id="player_3" placeholder="player name" value="">
 			</div>
 		  </div>
 		    <div class="form-group">
-			<label for="inputEmail3" class="col-sm-2 control-label">Team2Player2</label>
-			<div class="col-sm-10">
+			<label for="inputEmail3" class="control-label">Match Type</label>
+			<div class="">
 			
 			 <select id="MatchType"  class="form-control" >
 		<option value=0 >Rally Point</option>
@@ -138,7 +142,7 @@ display: flex;
 		  
 		  
 		  <div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
+			<div class="">
 			  <button type="button" id="savePlayer" class="btn btn-default">Save</button>
 			</div>
 		  </div>
@@ -167,12 +171,18 @@ var MatchAdminToken = false;
     if (localStorage.MatchAdminToken) {
 		$("#control_panel").show();
 		$("#playerName").hide();
+		$(".player_box").show();
 		MatchId  = localStorage.MatchId
 		MatchAdminToken  = localStorage.MatchAdminToken
 		var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+"/?mid="+MatchId;
 		$("#midUrl").attr("href", full)
     }else{
 		$("#playerName").show();
+		$("#control_panel").hide();
+		$(".player_box").hide();
+		
+		
+		
 	}
 
   } else {
@@ -287,7 +297,7 @@ $( "#pindah_serve" ).on( "click", function() {
 
 
 $( "#savePlayer" ).on( "click", function() {
-
+	
 	PlayerName[0][0] = $("#player_0").val();
 	PlayerName[0][1] = $("#player_1").val();
 	PlayerName[1][0] = $("#player_2").val();
@@ -305,7 +315,11 @@ $( "#savePlayer" ).on( "click", function() {
 	ws.send(JSON.stringify(MatchMetaData));
 	
 	displayPlayer();
-	$("#playerName").hide();
+
+		$("#control_panel").show();
+		$("#playerName").hide();
+		$(".player_box").show();
+		
 });
 
 $( "#reset" ).on( "click", function() {
@@ -356,6 +370,7 @@ function displayPlayer(){
 			   if(urlParams.has('mid')){
 					$("#control_panel").hide();
 					$("#playerName").hide();
+					$(".player_box").show();
 			   }
 			   
 			   
@@ -366,7 +381,7 @@ function displayPlayer(){
                   if(urlParams.has('mid')){
 					$("#control_panel").hide();
 					 ws.send(JSON.stringify({"matchId":urlParams.get('mid'),"action":"subscribe"}));
-					 
+					 $("#playerName").show();
 				  }
 				  
 				   if (localStorage.MatchAdminToken) {
@@ -414,6 +429,7 @@ function displayPlayer(){
 							var full = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+"/?mid="+MatchId;
 							$("#midUrl").attr("href", full)
 							$("#mid").val(matchData.mid)
+							
 						}
 						
 					}catch (e) {
